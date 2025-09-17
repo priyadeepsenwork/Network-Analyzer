@@ -82,6 +82,65 @@ get_timestamp() {
 	date '+%Y-%m-%d %H:%M:%S'
 }
 
+#===============================================================================
+# CORE FUNCTIONS
+#===============================================================================
+
+
+#	Function to check if a host is reachable via pinging
+check_host() {
+	local host="$1"
+	local ping_result
+
+	# Increment total host counter
+	((TOTAL_HOSTS++))
+
+	# Perform ping check with timeout and limited count
+	# Redirect both stdout and stderr to capture all output
+
+	if  ping_result=$(ping -c "${PING_COUNT}" -W "${PING_TIMEOUT}" "$host" 2>&1); then
+		# check if ping was actually successful by looking for successful transmission.
+		if echo "$ping_result" | grep -q "1 packets transmitted, 1 received\|1 packets transmitted, 1 packets received"; then
+			print_status "$COLOR_GREEN" "$host - REACHABLE"
+			((SUCCESSFUL_PINGS++))
+		else
+			print_status "$COLOR_RED" "$host - UNREACHABLE (ping failed)"
+			return 1
+		fi 
+	else
+		print_status "$COLOR_RED" "$HOST - UNREACHABLE (connection failed)"
+		return 1
+	fi
+
+}
+
+
+#	Function to check if a service is running
+check_service() {
+	local service_name="$1"
+	local service_status
+
+	# Increment total services counter here
+	((TOTAL_SERVICES++))
+
+	# First check if systemctl is available and service exists
+	if ! command -v systemctl >/dev/null 2>&1; then
+		print_status "$COLOR_YELLOW" "$service_name - UNKNOWN (systemctl not available)"
+		return 2
+	fi
+
+	# Now we have to check service status using systemctl is-active
+	if systemctl is-active "$service_name" >/dev/null 2>&1; then
+		# Double-check with systemctl status for more detailed info
+		if echo "$service_status" | grep -q "Active: active (running)\|Active: active (exited)"; then
+			print_status "$COLOR_GREEN" "$service_name - RUNNING"
+			((RUNNING_SERVICES++))
+			return 0
+		fi
+	fi
+}
+
+
 
 
 
