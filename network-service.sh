@@ -132,12 +132,62 @@ check_service() {
 	# Now we have to check service status using systemctl is-active
 	if systemctl is-active "$service_name" >/dev/null 2>&1; then
 		# Double-check with systemctl status for more detailed info
-		if echo "$service_status" | grep -q "Active: active (running)\|Active: active (exited)"; then
-			print_status "$COLOR_GREEN" "$service_name - RUNNING"
-			((RUNNING_SERVICES++))
-			return 0
+		if service_Status=$(systemctl status "$service_name" 2>/dev/null); then
+			if echo "$service_status" | grep -q "Active: active (running)\|Active: active (exited)"; then
+				print_status "$COLOR_GREEN" "$service_name - RUNNING"
+				((RUNNING_SERVICES++))
+				return 0
+			fi
 		fi
+		print_status "$COLOR_GREEN" "$service_name - RUNNING"
+		((RUNNING_SERVICES++))
+		return 0
+	else
+		# Check if service exists but is inactive
+		if systemctl list-unit-files "$service_name.service" >/dev/null 2>&1; then
+			print_status "$COLOR_RED" "$service_name - STOPPED"
+		else
+			print_status "$COLOR_YELLOW" "$service_name - NOT FOUND"
+		fi
+		return 1
 	fi
+}
+
+
+#	Function to display summary statistics
+display_summary() {
+	local timestamp
+	timestamp=$(get_timestamp)
+
+	print_header "HEALTH CHECK SUMMARY"
+
+	printf "${COLOR_BLUE}Report generated at: ${COLOR_NC} %s\n\n" "$timestamp"
+
+	# Network connectivity summary
+	printf "${COLOR_BLUE}🌐 Network Connectivity:${COLOR_NC}\n"
+	if [ "$SUCCESSFUL_PINGS" -eq "$TOTAL_HOSTS" ]; then
+		print_status "$COLOR_GREEN" "    All hosts reachable ($SUCCESSFUL_PINGS/$TOTAL_HOSTS)"
+	elif [ "$SUCCESSFUL_PINGS" -gt 0 ]; then
+		print_status "$COLOR_YELLOW" "    Partial connectivity ($SUCCESSFUL_PINGS/$TOTAL_HOSTS hosts reachable)"
+	else
+		print_status "$COLOR_RED" "    No hosts reachable ($SUCCESSFUL_PINGS/%$TOTAL_HOSTS)"
+	fi
+
+	echo ""
+
+	# Service status summary
+    	printf "${COLOR_BLUE}🔧 Service Status:${COLOR_NC}\n"
+	if [ "$RUNNING_SERVICES" -eq "$TOTAL_SERVICES" ]; then
+		print_status "$COLOR_GREEN" "    All services are running. list: ($RUNNING_SERVICES/$TOTAL_SERVICES)"
+	elif [ "$RUNNING_SERVICES" -gt 0 ]; then
+		print_status "$COLOR_YELLOW" "    Some services are down: list: ($RUNNING_SERVICES/$TOTAL_SERVICES running)"
+	else
+		print_status "$COLOR_RED" "    All services are down, please retry. list: ($RUNNING_SERVICES/$TOTAL_SERVICES)"
+	fi
+
+	echo ""
+
+	
 }
 
 
