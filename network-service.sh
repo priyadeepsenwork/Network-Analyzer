@@ -220,6 +220,50 @@ error_handler() {
 }
 
 
+#	--- Function to display USAGE INFORMATION ---
+show_usage() {
+	echo "Usage: $SCRIPT_NAME [options]"
+	echo ""
+	echo "Options:"
+	echo "  -h, --help	Show all the commands available"
+	echo "  -v, --verbose	Enable verbose output"
+	echo ""
+	echo "Description:"
+
+}
+
+#===============================================================================
+#	MAIN EXECUTION FLOW OF THE PROGRAM
+#===============================================================================
+
+# Setup Error handling
+trap 'error_handler $LINEN0' ERR
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+	case $1 in
+		-h|--help)
+			show usage
+			exit 0
+			;;
+		-v|--verbose)
+			set -0 xtrace	# Enables verbose mode
+			shift
+			;;
+		*)
+			print_status "$COLOR_RED" "!Unknown Option: $1"
+			show_usage
+			exit 1
+			;;
+	esac
+done
+
+
+
+
+
+
+
 
 
 
