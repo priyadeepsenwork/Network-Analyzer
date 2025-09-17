@@ -187,7 +187,24 @@ display_summary() {
 
 	echo ""
 
-	
+
+	# Overall system health
+	printf "${COLOR_BLUE}🏥 Overall Health:${COLOR_NC} "
+	local network_health_pct=$((SUCCESSFUL_PINGS * 100 / TOTAL_HOSTS))
+	local service_health_pct=$((RUNNING_SERVICES * 100 / TOTAL_SERVICES))
+	local overall_health_pct=$(((network_health_pct + service_health_pct) / 2))
+
+	if [ "$overall_health_pct" -ge 90 ]; then
+		print_status "$COLOR_GREEN" "EXCELLENT ($overall_health_pct%)"
+	elif [ "$overall_health_pct" -ge 70 ]; then
+		print_status "$COLOR_YELLOW" "GOOD ($overall_health_pct%)"
+	elif [ "$overall_health_pct" -ge 50 ]; then
+		print_status "$COLOR_YELLOW" "FAIR ($overall_health_pct%)"
+	else
+		print_status "$COLOR_RED" "POOR ($overall_health_pct%)"
+	fi
+
+	echo ""
 }
 
 
