@@ -209,6 +209,17 @@ display_summary() {
 
 
 
+#	--- ERROR HANDLING ---
+error_handler() {
+	local exit_code=$?
+	local line_number=$1
+	print_status "$COLOR_RED" "!!! Error occured on line $line_number (exit code: $exit_code)"
+	echo ""
+	print_status "$COLOR_YELLOW" "### Script Execution interrupted - partial results may be available"
+	exit "$exit_code"
+}
+
+
 
 
 
