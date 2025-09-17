@@ -57,8 +57,30 @@ TOTAL_SERVICES=0
 RUNNING_SERVICES=0
 
 
+#===============================================================================
+# UTILITY FUNCTIONS
+#===============================================================================
 
+#	Function to Print colored output
+print_status() {
+	local color="$1"
+	local message="$2"
+	printf "${color}%s${COLOR_NC}\n" "$message"
+}
 
+#	Function to print section headers
+print_header() {
+	local header="$1"
+	echo ""
+	printf "${COLOR_BLUE}================================${COLOR_NC}"
+	printf "${COLOR_BLUE}%s${COLOR_NC}\n" "$header"
+	printf "${COLOR_BLUE}================================${COLOR_NC}"
+}
+
+#	Function to get timestamp
+get_timestamp() {
+	date '+%Y-%m-%d %H:%M:%S'
+}
 
 
 
