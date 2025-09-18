@@ -6,13 +6,12 @@
 set -e
 
 SCRIPT_PATH="./network_service_checker.sh"
-TEST_CONFIG="test_config.conf"
 
 # Colors
-RED='[0;31m'
-GREEN='[0;32m'
-BLUE='[0;34m'
-NC='[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m'
 
 echo -e "${BLUE}Testing Network & Service Status Checker...${NC}"
 
