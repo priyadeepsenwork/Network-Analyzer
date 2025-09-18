@@ -16,6 +16,8 @@ A comprehensive Bash script for monitoring network connectivity and essential sy
 - **Error Handling**: Proper exit codes for script automation
 - **Service Validation**: Checks if services exist before monitoring
 
+***
+
 ## 📋 Requirements
 
 - Linux system with systemd
@@ -33,6 +35,12 @@ git clone https://github.com/yourusername/network-service-checker.git
 cd network-service-checker
 ```
 
+- (for Linux users with SSH configuraion)
+```bash
+git clone git@github.com:priyadeepsenwork/Network-Analyzer.git
+cd network-service-checker
+```
+
 2. Make the script executable:
 ```bash
 chmod +x network_service_checker.sh
@@ -43,23 +51,25 @@ chmod +x network_service_checker.sh
 sudo mkdir -p /var/log
 ```
 
+***
+
 ## 🔧 Configuration
 
-### Default Monitored Hosts
+### 1. Default Monitored Hosts
 - google.com
 - 8.8.8.8 (Google DNS)
 - 1.1.1.1 (Cloudflare DNS)
 - github.com
 - stackoverflow.com
 
-### Default Monitored Services
+### 2. Default Monitored Services
 - sshd (SSH daemon)
 - systemd-resolved (DNS resolution)
 - NetworkManager (Network management)
 - cron (Task scheduler)
 - systemd-timesyncd (Time synchronization)
 
-### Custom Configuration
+### 3. Custom Configuration
 
 Edit `config.conf` to customize monitored hosts and services:
 
@@ -83,7 +93,7 @@ SERVICES=(
 
 ## 📖 Usage
 
-### Basic Usage
+### 1. Basic Usage
 ```bash
 # Run with default settings
 ./network_service_checker.sh
@@ -98,7 +108,7 @@ SERVICES=(
 ./network_service_checker.sh -j
 ```
 
-### Command Line Options
+### 2. Command Line Options
 
 | Option | Description |
 |--------|-------------|
@@ -112,7 +122,7 @@ SERVICES=(
 | `--hosts-only` | Check only network hosts |
 | `--services-only` | Check only system services |
 
-### Examples
+### 3. Examples
 
 ```bash
 # Check only network connectivity
@@ -135,7 +145,7 @@ SERVICES=(
 
 ## 📊 Output Formats
 
-### Standard Output
+### 1. Standard Output
 ```
 Network & Service Status Checker v1.0
 Started at: 2025-09-18 18:12:00
@@ -158,7 +168,7 @@ Service Summary: 2/3 services running
 • 1 service issue(s)
 ```
 
-### JSON Output
+### 2. JSON Output
 ```json
 {
   "timestamp": "2025-09-18 18:12:00",
@@ -197,7 +207,7 @@ Sample log entry:
 
 ## 🔄 Automation
 
-### Cron Integration
+### 1. Cron Integration
 
 Add to crontab for automated monitoring:
 
@@ -212,7 +222,7 @@ Add to crontab for automated monitoring:
 0 8 * * * /path/to/network_service_checker.sh
 ```
 
-### Systemd Timer (Alternative)
+### 2. Systemd Timer (Alternative)
 
 Create a systemd service and timer for more advanced scheduling:
 
@@ -265,14 +275,6 @@ else
 fi
 ```
 
-## 🛡️ Security Considerations
-
-- Run with appropriate user permissions
-- Secure the log files with proper ownership and permissions
-- Consider network security when adding external hosts
-- Validate configuration file inputs
-- Use systemd user services for non-root execution when possible
-
 ***
 
 ## 🤝 Contributing
@@ -283,15 +285,13 @@ fi
 4. Push to the branch (`git push origin feature/new-feature`)
 5. Create a Pull Request
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+***
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-**Permission Denied on Log File**
+**1. Permission Denied on Log File**
 ```bash
 # Fix log directory permissions
 sudo chown $USER:$USER /var/log/
@@ -299,12 +299,12 @@ sudo chown $USER:$USER /var/log/
 ./network_service_checker.sh -l ./local.log
 ```
 
-**Service Not Found Warnings**
+**2. Service Not Found Warnings**
 - The script checks if services exist before monitoring
 - Remove non-existent services from your configuration
 - Services marked as "NOT_FOUND" don't count as failures
 
-**Network Timeouts**
+**3. Network Timeouts**
 - Adjust `PING_TIMEOUT` in configuration
 - Check firewall rules
 - Verify DNS resolution
@@ -313,9 +313,9 @@ sudo chown $USER:$USER /var/log/
 
 ## 🔍 Advanced Usage
 
-### Integration with Monitoring Systems
+### 1. Integration with Monitoring Systems
 
-**Nagios/Icinga Integration**
+**A. Nagios/Icinga Integration**
 ```bash
 # Use exit codes for status
 ./network_service_checker.sh -q
@@ -325,7 +325,7 @@ case $? in
 esac
 ```
 
-**Prometheus Integration**
+**B. Prometheus Integration**
 ```bash
 # Generate metrics format
 ./network_service_checker.sh -j | jq -r '
@@ -334,7 +334,7 @@ esac
 '
 ```
 
-### Custom Alert Scripts
+### 2. Custom Alert Scripts
 
 ```bash
 #!/bin/bash
@@ -349,9 +349,13 @@ fi
 ***
 
 ## 📊 Performance Notes
-
 - Network checks run sequentially (can add parallel execution)
 - Service checks are fast (systemctl is-active)
 - Typical execution time: 10-30 seconds depending on network latency
 - Memory footprint: ~10MB during execution
 - Log rotation recommended for long-term deployments
+
+***
+
+## 📜 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
