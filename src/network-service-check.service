@@ -1,0 +1,14 @@
+[Unit]
+Description=Network & Service Status Check
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/network_service_checker.sh -q
+User=networkcheck
+Group=networkcheck
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
