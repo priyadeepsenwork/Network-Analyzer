@@ -24,6 +24,7 @@ A comprehensive Bash script for monitoring network connectivity and essential sy
 - Bash 4.0 or higher
 - Standard utilities: `ping`, `systemctl`, `date`
 - Appropriate permissions for service status checks
+- may not run in immutable distros like Bazzite,SteamOS (not verified)
 
 ***
 
